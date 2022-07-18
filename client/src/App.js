@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import './App.css';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
+import Mutation from "react-apollo/Mutation";
 
 const GET_BOOKS = gql`
   {
@@ -15,7 +16,26 @@ const GET_BOOKS = gql`
   }
 `;
 
+const DELETE_USER = gql`
+  mutation deleteUser($id: String!) {
+    deleteUser(id:$id) {
+      id
+    }
+  }
+`;
+
 class App extends Component {
+
+  deleteUser = (e) => {
+    console.log("enter",e)
+      return (
+          <Mutation mutation={DELETE_USER} key={e.id} onCompleted={() => this.props.history.push('/')}>
+            {({loading, error}) => (
+                console.log('data-->', {loading, error})
+            )}
+          </Mutation>
+      )
+  }
 
   render() {
 
@@ -39,19 +59,19 @@ class App extends Component {
                   <table className="table table-stripe">
                     <thead>
                       <tr>
-                        <th>id</th>
                         <th>firstName</th>
                         <th>lastName</th>
                         <th>email</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {data.users.map((book, index) => (
                         <tr key={index}>
-                          <td>{book.id}</td>
                           <td>{book.firstName}</td>
                           <td>{book.lastName}</td>
                           <td>{book.email}</td>
+                          <td><div className="btn btn-primary" onClick={()=>this.deleteUser(book)}>Delete</div></td>
                         </tr>
                       ))}
                     </tbody>

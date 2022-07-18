@@ -1,4 +1,5 @@
 const {gql} = require('apollo-server');
+const { createUser }=require('../resolver')
 //
 // const typeDefs = gql`
 // type Student {
@@ -33,7 +34,7 @@ const typeDefs = gql`
  }
  
  type User{
-     id:ID!
+     id:String
      firstName:String
      lastName:String
      email:String
@@ -41,12 +42,26 @@ const typeDefs = gql`
 
  type Mutation{
      createUser(userNew:UserInput!):User
+     deleteUser(removeUser:delete!):User
+     updateUser(editUser:editInput!):User
  }
+ 
  input UserInput{
     firstName:String!
     lastName:String!
     email:String!
  }
-`
+ 
+ input editInput{
+    id:String!
+    firstName:String!
+    lastName:String!
+    email:String!
+ }
+ 
+ input delete{
+    id:String!
+ }
+`;
 
 module.exports = typeDefs;
