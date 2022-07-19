@@ -1,31 +1,5 @@
 const {gql} = require('apollo-server');
-const { createUser }=require('../resolver')
-//
-// const typeDefs = gql`
-// type Student {
-//   id: ID
-//   name: String
-//   email: String
-// }
-//
-// type Query {
-//   students: [Student]!
-// }
-//
-// type Mutation {
-//   getStudents(Ids: [ID]!): Response!
-//   createStudents(forCreate:Student): Response!
-// }
-//
-// type Response {
-//   success: Boolean!
-//   message: String
-//   students: [Student]
-// }
-//
-// `
-//
-// module.exports = typeDefs;
+const { createUser }=require('../resolver');
 
 const typeDefs = gql`
  type Query{

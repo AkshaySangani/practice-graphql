@@ -1,9 +1,20 @@
-let mongoose = require('mongoose');
+const mongoose =require("mongoose");
 
-let StudetSchema = new mongoose.Schema({
-    id: String,
-    name: String,
-    email: String,
+const userSchema = new mongoose.Schema({
+    firstName:{
+        type:String,
+        required:true
+    },
+    lastName:{
+        type:String,
+        required:true
+    },
+    email:{
+        type:String,
+        required:true
+    },
 });
 
-module.exports = mongoose.model('StudetSchema', StudetSchema);
+const User=mongoose.model("User",userSchema);
+
+module.exports=User;

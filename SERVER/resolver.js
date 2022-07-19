@@ -1,4 +1,4 @@
-const User =require("./model")
+const User =require("./model/model")
 
 const resolvers = {
     Query:{
@@ -8,7 +8,7 @@ const resolvers = {
     Mutation:{
         createUser:async (_,{userNew})=>{
             console.log("userNew-->",userNew);
-            const user = await User.findOne({email:userNew.email})
+            const user = await User.findOne({email:userNew.email});
             if(user){
                 throw new Error("User already exists with that email")
             }
@@ -20,16 +20,16 @@ const resolvers = {
         },
         deleteUser: async (_,{removeUser})=>{
             console.log("removeUser-->",removeUser);
-            const user = await User.findById(removeUser.id)
+            const user = await User.findById(removeUser.id);
             if(!user){
                 throw new Error("User Not found!")
             }
-            await User.findByIdAndDelete(removeUser.id)
+            await User.findByIdAndDelete(removeUser.id);
             return removeUser
         },
         updateUser:async (_,{editUser})=>{
-            console.log("editUser-->",editUser)
-            const user = await User.findById(editUser.id)
+            console.log("editUser-->",editUser);
+            const user = await User.findById(editUser.id);
             if(!user){
                 throw new Error("User Not found!")
             }
@@ -37,6 +37,6 @@ const resolvers = {
             return editUser
         }
     }
-}
+};
 
-module.exports=resolvers
+module.exports=resolvers;

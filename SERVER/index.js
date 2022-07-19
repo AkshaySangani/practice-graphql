@@ -1,19 +1,7 @@
 const { ApolloServer, gql } = require('apollo-server');
-const typeDefs =require('./schema/schema')
-const mongoose=require("mongoose")
-const resolvers =require("./resolver")
-// const express=require("express");
-// const cors = require('cors');
-// const server = express();
-// server.use(cors());
-// The GraphQL schema
-
-// A map of functions which return data for the schema.
-// const resolvers = {
-//     Query: {
-//         hello: () => 'world',
-//     },
-// };
+const typeDefs =require('./schema/schema');
+const mongoose=require("mongoose");
+const resolvers =require("./resolver");
 
 const app = new ApolloServer({
     typeDefs,
