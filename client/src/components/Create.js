@@ -1,78 +1,69 @@
-import React, {Component} from 'react';
+import React,{useState}  from 'react';
 import gql from "graphql-tag";
-import {Mutation} from "react-apollo";
 import {Link} from 'react-router-dom';
+import { useMutation } from '@apollo/client';
 
 const CREATE_USER = gql`
-    mutation CreateUser(
-        $firstName: String!
-        $lastName:String!
-        $email: String!){ 
-        createUser(
-            firstName:$firstName
-            lastName:$lastName
-            email:$email)
-    }
-`;
+    mutation createUser($userNew: UserInput){ 
+        createUser(userNew: $userNew){
+            firstName
+            lastName
+            email
+            id
+        }
+    }`;
 
-class Create extends Component {
-
-    render() {
-        let firstName, lastName, email;
+const Create=()=>{
+// const [createUser,{data,loading,error}] = useMutation(CREATE_USER)
+const [createUser] = useMutation(CREATE_USER);
+const [field,setField]=useState({
+    firstName:'',
+    lastName:'',
+    email:'',
+});
         return (
-            <Mutation mutation={CREATE_USER} onCompleted={() => this.props.history.push('/')}>
-                {(createUser, {loading, error}) => (
                     <div className="container">
                         <div className="panel panel-default">
                             <div className="panel-heading">
-                                <h3 className="panel-title">
+                                <h3 className="panel-lastName">
                                     ADD USER
                                 </h3>
                             </div>
                             <div className="panel-body">
                                 <h4><Link to="/" className="btn btn-primary">User List</Link></h4>
-                                <form onSubmit={e => {
+                                <form onSubmit={async (e) => {
                                     e.preventDefault();
-                                    createUser({
+                                       let variables= {
+                                            firstName: field.firstName,
+                                            lastName: field.lastName,
+                                            email: field.email
+                                        }
+                                    await createUser({
                                         variables: {
-                                            firstName: firstName.value,
-                                            lastName: lastName.value,
-                                            email: email.value
+                                            userNew: variables
                                         }
                                     });
-                                    firstName.value = "";
-                                    lastName.value = "";
-                                    email.value = "";
+                                    setField({})
                                 }}>
                                     <div className="form-group">
-                                        <label htmlFor="isbn">firstName:</label>
-                                        <input type="text" className="form-control" name="firstName" ref={node => {
-                                            firstName = node;
-                                        }} placeholder="firstName"/>
+                                        <label htmlFor="firstName">firstName:</label>
+                                        <input type="text" className="form-control" name="firstName" value={field.firstName} onChange={(e)=>setField({...field,firstName:e.target.value})} placeholder="firstName"/>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="title">lastName:</label>
-                                        <input type="text" className="form-control" name="lastName" ref={node => {
-                                            lastName = node;
-                                        }} placeholder="lastName"/>
+                                        <label htmlFor="lastName">lastName:</label>
+                                        <input type="text" className="form-control" name="lastName"  value={field.lastName} onChange={(e)=>setField({...field,lastName:e.target.value})} placeholder="lastName"/>
                                     </div>
                                     <div className="form-group">
-                                        <label htmlFor="author">email:</label>
-                                        <input type="text" className="form-control" name="email" ref={node => {
-                                            email = node;
-                                        }} placeholder="email"/>
+                                        <label htmlFor="email">email:</label>
+                                        <input type="text" className="form-control" name="email" value={field.email} onChange={(e)=>setField({...field,email:e.target.value})} placeholder="email"/>
                                     </div>
                                     <button type="submit" className="btn btn-success">Submit</button>
                                 </form>
-                                {loading && <p>Loading...</p>}
-                                {error && <p>Error :( Please try again</p>}
                             </div>
                         </div>
                     </div>
-                )}
-            </Mutation>
         );
-    }
-}
+    };
+
 
 export default Create;

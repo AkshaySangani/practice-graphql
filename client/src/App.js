@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './App.css';
 import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
-import Mutation from "react-apollo/Mutation";
+import { useMutation,useLazyQuery}from '@apollo/client';
 
-const GET_BOOKS = gql`
+const GET_USER = gql`
   {
     users {
       id
@@ -16,35 +15,42 @@ const GET_BOOKS = gql`
   }
 `;
 
-const DELETE_USER = gql`
-  mutation deleteUser($id: String!) {
-    deleteUser(id:$id) {
-      id
-    }
+const DELETE_USER=gql`
+mutation Mutation($removeUser: delete!) {
+  deleteUser(removeUser: $removeUser) {
+    firstName
   }
-`;
+}`;
 
-class App extends Component {
+export default function Home() {
 
-  deleteUser = (e) => {
-    console.log("enter",e)
-      return (
-          <Mutation mutation={DELETE_USER} key={e.id} onCompleted={() => this.props.history.push('/')}>
-            {({loading, error}) => (
-                console.log('data-->', {loading, error})
-            )}
-          </Mutation>
-      )
-  }
+  // const {loading,error,data} = useQuery(GET_USER);
+  const [loadUsers, { loading, error, data }] = useLazyQuery(GET_USER);
+  const [deleteUser] = useMutation(DELETE_USER,{
+    refetchQueries:[
+      {query: GET_USER},
+      'users'
+    ]
+  });
 
-  render() {
 
-    return (
-      <Query pollInterval={500} query={GET_BOOKS}>
-        {({ loading, error, data }) => {
-          console.log('data',data)
-          if (loading) return 'Loading...';
-          if (error) return `Error! ${error.message}`;
+  const handleCLick=async (book)=>{
+    console.log("book",book.id)
+    let variables= {
+      id:book.id
+    };
+    await deleteUser({
+      variables: {
+        removeUser: variables
+      }
+    })
+  };
+
+  useEffect(()=>{
+    loadUsers();
+  },[deleteUser]);
+
+  console.log("data==>",data)
 
           return (
             <div className="container">
@@ -66,12 +72,13 @@ class App extends Component {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.users.map((book, index) => (
+                      { data && data.users.map((book, index) => (
                         <tr key={index}>
                           <td>{book.firstName}</td>
                           <td>{book.lastName}</td>
                           <td>{book.email}</td>
-                          <td><div className="btn btn-primary" onClick={()=>this.deleteUser(book)}>Delete</div></td>
+                          <td><Link className="btn btn-primary" to={`/edit/:${book.id}`} >Edit</Link></td>
+                          <td><div className="btn btn-primary" onClick={()=>handleCLick(book)} >Delete</div></td>
                         </tr>
                       ))}
                     </tbody>
@@ -80,10 +87,5 @@ class App extends Component {
               </div>
             </div>
           );
-        }}
-      </Query>
-    );
-  }
 }
 
-export default App;

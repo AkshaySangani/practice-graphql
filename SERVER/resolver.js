@@ -7,7 +7,7 @@ const resolvers = {
     },
     Mutation:{
         createUser:async (_,{userNew})=>{
-            console.log("userNew",userNew)
+            console.log("userNew-->",userNew);
             const user = await User.findOne({email:userNew.email})
             if(user){
                 throw new Error("User already exists with that email")
