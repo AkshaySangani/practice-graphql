@@ -1,13 +1,17 @@
 import React, {useState} from 'react';
-import {CREATE_USER} from "./QueryAndmutation";
+import {CREATE_USER, GET_ALL_USER} from "./QueryAndmutation";
 import {Link, useNavigate} from 'react-router-dom';
-// import { useNavigate } from "react-router-dom";
 import {useMutation} from '@apollo/client';
 
 const Create = () => {
 
 // const [createUser,{data,loading,error}] = useMutation(CREATE_USER)
-    const [createUser] = useMutation(CREATE_USER);
+    const [createUser,{error}] = useMutation(CREATE_USER,{
+        refetchQueries: [
+            {query: GET_ALL_USER},
+            'users'
+        ],
+    });
 
     const navigate = useNavigate();
     const [field, setField] = useState({
@@ -61,6 +65,7 @@ const Create = () => {
                         <button type="submit" className="btn btn-success">Submit</button>
                     </form>
                 </div>
+                {error && `Error! ${error.message}`}
             </div>
         </div>
     );

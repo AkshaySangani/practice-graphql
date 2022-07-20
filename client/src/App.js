@@ -9,13 +9,21 @@ export default function Home() {
 
     // const {loading,error,data} = useQuery(GET_USER);
     const [loadUsers, {loading, error, data}] = useLazyQuery(GET_ALL_USER);
+    // const [deleteUser] = useMutation(DELETE_USER, {
+    //     refetchQueries: [
+    //         {query: GET_ALL_USER},
+    //         'users'
+    //     ]
+    // });
     const [deleteUser] = useMutation(DELETE_USER, {
-        refetchQueries: [
-            {query: GET_ALL_USER},
-            'users'
-        ]
+        update(cache, {data: {deleteUser}}) {
+            const {users} = cache.readQuery({query: GET_ALL_USER});
+            cache.writeQuery({
+                query: GET_ALL_USER,
+                data: {users: users.filter(user => user.id !== deleteUser.id)}
+            });
+        }
     });
-
 
     const handleClick = async (user) => {
         let variables = {
@@ -35,6 +43,7 @@ export default function Home() {
     console.log("data==>", data);
     return (
         <div className="container">
+            {(!data || loading) ? "Loading...":
             <div className="panel panel-default">
                 <div className="panel-heading">
                     <h3 className="panel-title">
@@ -68,7 +77,10 @@ export default function Home() {
                     </table>
                 </div>
             </div>
+            }
+            {error && `Error! ${error.message}`}
         </div>
-    );
+    )
+        ;
 }
 
