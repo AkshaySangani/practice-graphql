@@ -12,10 +12,19 @@ const typeDefs = gql`
      firstName:String
      lastName:String
      email:String
+ } 
+ 
+ type Admin{
+     id:String
+     email:String
+     password:String
+     token:String
  }
 
  type Mutation{
-     createUser(userNew:UserInput):User
+     createAdmin(newAdmin:AdminInput!):Admin
+     checkAdmin(newAdmin:AdminInput!):Admin
+     createUser(userNew:UserInput!):User
      deleteUser(removeUser:delete!):User
      updateUser(editUser:editInput!):User
  }
@@ -24,6 +33,11 @@ const typeDefs = gql`
     firstName:String!
     lastName:String!
     email:String!
+ }
+ 
+ input AdminInput{
+    email:String!
+    password:String!
  }
  
  input editInput{
