@@ -1,22 +1,23 @@
-const {User, Admin} = require("./model/model");
 const jwt = require('jsonwebtoken');
 const {AuthenticationError} = require("apollo-server-errors");
 
 const resolvers = {
     Query: {
-        users: async (_, {}, context) => {
-            if (!context.user) throw new AuthenticationError('you must be logged in');
-            return User.find()
+        users: async (_,{},context) => {
+            // console.log("dataSource==>",dataSources);
+            console.log("context==>",context);
+            if (!context.user) throw new AuthenticationError('you must be logged in','401');
+            return context.dataSources.User.find()
         },
         user: async (_, {id}, context) => {
             if (!context.user) throw new AuthenticationError('you must be logged in');
-            return User.findById(id)
+            return context.dataSources.User.findById(id)
         },
     },
     Mutation: {
         createAdmin: async (_, {newAdmin},context) => {
             if (!context.user) {
-                const user = await Admin.findOne({email: newAdmin.email});
+                const user = await context.dataSources.Admin.findOne({email: newAdmin.email});
                 if (user) {
                     throw new Error("Admin already exists.")
                 }
@@ -25,7 +26,7 @@ const resolvers = {
                     password: newAdmin.password,
                     token: await jwt.sign(newAdmin.email, 'akshay')
                 };
-                const newdmin = new Admin({
+                const newdmin = new context.dataSources.Admin({
                     ...newAdmin
                 });
                 newdmin.save();
@@ -35,7 +36,7 @@ const resolvers = {
         checkAdmin: async (_, {newAdmin}, context) => {
             if (!context.user) {
                 console.log("newAdmin-->", newAdmin);
-                const user = await Admin.findOne({email: newAdmin.email});
+                const user = await context.dataSources.Admin.findOne({email: newAdmin.email});
                 const data = {
                     email: newAdmin.email,
                     password: newAdmin.password,
@@ -55,11 +56,11 @@ const resolvers = {
         createUser: async (_, {userNew}, context) => {
             if (context.user) {
                 console.log("userNew-->", userNew);
-                const user = await User.findOne({email: userNew.email});
+                const user = await context.dataSources.User.findOne({email: userNew.email});
                 if (user) {
                     throw new Error("User already exists with that email")
                 }
-                const newUser = new User({
+                const newUser = new context.dataSources.User({
                     ...userNew
                 });
 
@@ -69,22 +70,22 @@ const resolvers = {
         deleteUser: async (_, {removeUser}, context) => {
             if (context.user) {
                 console.log("removeUser-->", removeUser);
-                const user = await User.findById(removeUser.id);
+                const user = await context.dataSources.User.findById(removeUser.id);
                 if (!user) {
                     throw new Error("User Not found!")
                 }
-                await User.findByIdAndDelete(removeUser.id);
+                await context.dataSources.User.findByIdAndDelete(removeUser.id);
                 return removeUser
             }
         },
         updateUser: async (_, {editUser}, context) => {
             if (context.user) {
                 console.log("editUser-->", editUser);
-                const user = await User.findById(editUser.id);
+                const user = await context.dataSources.User.findById(editUser.id);
                 if (!user) {
                     throw new Error("User Not found!")
                 }
-                const data = await User.findByIdAndUpdate({_id: editUser.id}, editUser);
+                const data = await context.dataSources.User.findByIdAndUpdate({_id: editUser.id}, editUser);
                 return editUser
             }
         }

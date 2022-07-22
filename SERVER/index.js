@@ -1,9 +1,10 @@
-const {AuthenticationError}=require( "apollo-server-errors");
 const { ApolloServer, gql } = require('apollo-server');
 const typeDefs =require('./schema/schema');
 const mongoose=require("mongoose");
 const resolvers =require("./resolver");
 const jwt = require('jsonwebtoken');
+const {User, Admin} = require("./model/model");
+
 
 const app = new ApolloServer({
     typeDefs,
@@ -15,6 +16,12 @@ const app = new ApolloServer({
             user = await jwt.verify(token, "akshay");
         }
         return {user};
+    },
+    dataSources:()=>{
+        return {
+            User: User,
+            Admin: Admin,
+        }
     },
 });
 
