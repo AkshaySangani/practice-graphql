@@ -5,10 +5,23 @@ const resolvers =require("./resolver");
 const jwt = require('jsonwebtoken');
 const {User, Admin} = require("./model/model");
 
+const setHttpPlugin = {
+    async requestDidStart() {
+        return {
+            async willSendResponse({ response }) {
+                response.http.headers.set('Custom-Header', 'hello');
+                if (response?.errors?.[0]?.message==="User already exists with that email") {
+                    response.http.status = 408;
+                }
+            }
+        };
+    }
+};
 
 const app = new ApolloServer({
     typeDefs,
     resolvers,
+    plugins: [setHttpPlugin],
     context: async ({ req }) => {
         const token = req.headers.authorization.split('Bearer ')[1] || '';
         let user ;

@@ -4,8 +4,6 @@ const {AuthenticationError} = require("apollo-server-errors");
 const resolvers = {
     Query: {
         users: async (_,{},context) => {
-            // console.log("dataSource==>",dataSources);
-            console.log("context==>",context);
             if (!context.user) throw new AuthenticationError('you must be logged in','401');
             return context.dataSources.User.find()
         },
