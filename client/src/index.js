@@ -5,7 +5,6 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import Edit from './components/Edit';
 import Create from './components/Create';
 import LogIn from "./components/LogIn";
 import {
@@ -54,7 +53,6 @@ ReactDOM.render(
             <Routes>
                 <Route path='/login' element={<LogIn/>}/>
                 <Route path='/' element={<App/>}/>
-                <Route path='/edit/:id' element={<Edit/>}/>
                 <Route path='/create' element={<Create/>}/>
             </Routes>
         </BrowserRouter>

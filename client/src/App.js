@@ -74,7 +74,7 @@ export default function Home() {
                                 <td>{user.firstName}</td>
                                 <td>{user.lastName}</td>
                                 <td>{user.email}</td>
-                                <td><Link className="btn btn-primary" to={`/edit/:${user.id}`}>Edit</Link></td>
+                                <td><button className="btn btn-primary">Edit</button></td>
                                 <td>
                                     <div className="btn btn-primary" onClick={() => handleClick(user)}>Delete</div>
                                 </td>

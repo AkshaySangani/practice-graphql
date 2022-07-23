@@ -7,30 +7,8 @@ const resolvers = {
             if (!context.user) throw new AuthenticationError('you must be logged in','401');
             return context.dataSources.User.find()
         },
-        user: async (_, {id}, context) => {
-            if (!context.user) throw new AuthenticationError('you must be logged in');
-            return context.dataSources.User.findById(id)
-        },
     },
     Mutation: {
-        createAdmin: async (_, {newAdmin},context) => {
-            if (!context.user) {
-                const user = await context.dataSources.Admin.findOne({email: newAdmin.email});
-                if (user) {
-                    throw new Error("Admin already exists.")
-                }
-                const data = {
-                    email: newAdmin.email,
-                    password: newAdmin.password,
-                    token: await jwt.sign(newAdmin.email, 'akshay')
-                };
-                const newdmin = new context.dataSources.Admin({
-                    ...newAdmin
-                });
-                newdmin.save();
-                return data;
-            }
-        },
         checkAdmin: async (_, {newAdmin}, context) => {
             if (!context.user) {
                 console.log("newAdmin-->", newAdmin);
@@ -76,17 +54,6 @@ const resolvers = {
                 return removeUser
             }
         },
-        updateUser: async (_, {editUser}, context) => {
-            if (context.user) {
-                console.log("editUser-->", editUser);
-                const user = await context.dataSources.User.findById(editUser.id);
-                if (!user) {
-                    throw new Error("User Not found!")
-                }
-                const data = await context.dataSources.User.findByIdAndUpdate({_id: editUser.id}, editUser);
-                return editUser
-            }
-        }
     }
 };
 

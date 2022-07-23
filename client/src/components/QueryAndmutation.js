@@ -32,17 +32,6 @@ export const GET_USER = gql`
 }
 `;
 
-export const EDIT_USER = gql`
-mutation Mutation($editUser: editInput!) {
-  updateUser(editUser: $editUser) {
-    id
-    firstName
-    lastName
-    email
-  }
-}
-`;
-
 export const CREATE_USER = gql`
     mutation createUser($userNew: UserInput!){ 
         createUser(userNew: $userNew){
@@ -63,12 +52,3 @@ mutation CheckAdmin($newAdmin: AdminInput!) {
     }
 }`;
 
-export const CREATE_ADMIN = gql`
-mutation Mutation($newAdmin: AdminInput!) {
-    createAdmin(newAdmin: $newAdmin) {
-        id
-        email
-        password
-        token
-    }
-}`;

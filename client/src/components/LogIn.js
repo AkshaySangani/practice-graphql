@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {CHECK_ADMIN, CREATE_ADMIN} from "./QueryAndmutation";
+import {CHECK_ADMIN} from "./QueryAndmutation";
 import {useMutation} from "@apollo/client";
 import {useNavigate} from "react-router-dom";
 
@@ -11,10 +11,8 @@ export default function LogIn() {
         return navigate("/")
     };
     const [logIn, setLogIn] = useState(false);
-    const[warning,setWarning]=useState('')
 
-    const [createAdmin] = useMutation(CREATE_ADMIN);
-    const [checkAdmin, {error, data}] = useMutation(CHECK_ADMIN, {onCompleted: logincheck});
+    const [checkAdmin, {error}] = useMutation(CHECK_ADMIN, {onCompleted: logincheck});
 
 
     useEffect(() => {
@@ -29,22 +27,7 @@ export default function LogIn() {
                 {logIn ?
                     <div className="panel-body">
                         <h4>Register</h4>
-                        <form onSubmit={async (e) => {
-                            e.preventDefault();
-                            let variables = {
-                                email: field.email,
-                                password: field.password
-                            };
-                            await createAdmin({
-                                variables: {
-                                    newAdmin: variables
-                                }
-                            }).then(res=>setWarning('Admin created successfully now '))
-                            await setLogIn(false);
-                            await setField({email:'',password:''})
-                        }
-                        }
-                        >
+                        <form>
                             <div className="form-group">
                                 <label htmlFor="email">email:</label>
                                 <input type="email" className="form-control" name="email" value={field.email}
@@ -62,9 +45,6 @@ export default function LogIn() {
                     </div>
                     :
                     <div className="panel-body">
-                        <h4>
-                            {warning && warning}Log In
-                        </h4>
                         <form onSubmit={async (e) => {
                             e.preventDefault();
                             let variables = {

@@ -21,7 +21,7 @@ const setHttpPlugin = {
 const app = new ApolloServer({
     typeDefs,
     resolvers,
-    plugins: [setHttpPlugin],
+    // plugins: [setHttpPlugin],
     context: async ({ req }) => {
         const token = req.headers.authorization.split('Bearer ')[1] || '';
         let user ;
